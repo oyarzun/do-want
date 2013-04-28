@@ -11,7 +11,7 @@ class wishlist extends db{
 
 	function getCurrentUserWishlist($args){
 			// "select * from {$this->options['table_prefix']}items where userid = '{$_SESSION['userid']}'";
-		if($args['includeReceived'] != 1){
+		if(array_key_exists('includeReceived', $args) && $args['includeReceived'] != 1){
 			$received = "and items.received = 0";
 		}else{
 			$received = "";
