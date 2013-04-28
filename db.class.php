@@ -6,6 +6,7 @@ class db{
 	public $dbuser;
 	public $dbpass;
 	public $dbhost;
+	public $dbcharSet;
 
 	private $dbConn;
 	public $debug;
@@ -13,8 +14,8 @@ class db{
 	function dbConnect(){
 		$this->dbConn = mysql_connect($this->dbhost,$this->dbuser,$this->dbpass);
 		
-		if($this->options['charSet'] != ''){
-			$setChar = mysql_set_charset($this->options['charSet'],$this->dbConn);
+		if($this->dbcharSet != ''){
+			$setChar = mysql_set_charset($this->dbcharSet,$this->dbConn);
 		}
 		
 		$select = mysql_select_db($this->dbname,$this->dbConn);	
@@ -62,7 +63,9 @@ class db{
 				$assocData = $row;
 			}
 		}
-		
+	        if (!isset($assocData)) {
+	           $assocData = NULL;
+		}
 		return $assocData;
 	}
 	

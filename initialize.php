@@ -9,12 +9,13 @@
 	$init->dbname = $dbname;
 	$init->dbuser = $dbuser;
 	$init->dbpass = $dbpass;
-	$init->options = $options;
+	$init->dbcharSet = $dbcharSet;
 	
 	$init->dbConnect();
 		
 	$ops = $init->dbQuery("select * from options");
 	
-	$_SESSION['options'] = $init->dbAssoc($ops);
+	$init->options = $init->dbAssoc($ops);
+	$_SESSION['options'] = $init->options;
 
 ?>

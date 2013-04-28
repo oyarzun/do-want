@@ -8,9 +8,7 @@ if(!file_exists('config.php')){
 }
 
 
-include 'config.php';
 include 'initialize.php';
-print_r($_SESSION);
 ?>
 <!DOCTYPE html>
 
@@ -62,9 +60,9 @@ print_r($_SESSION);
 		/*
 			Eventually we'll store this information in the DB somewhere so it can be changed at a whim.
 		*/
-		storedData.currencySymbol = "<?php print $options['currency_symbol'] ?>";
-		storedData.filepath = "<?php print $options['filepath'] ?>";
-		storedData.largeIcons = "<?php print $options['large-icons'] ?>";
+		storedData.currencySymbol = "<?php print $_SESSION['options']['currency_symbol'] ?>";
+		storedData.filepath = "<?php print $_SESSION['options']['filepath'] ?>";
+		storedData.largeIcons = "<?php print $_SESSION['options']['large-icons'] ?>";
 		
 		storedData.columns = [
 			{
@@ -260,7 +258,7 @@ print_r($_SESSION);
 	</div>
 -->
 <?php
-if($options['includeCustom'] == true){
+if($_SESSION['options']['includeCustom'] == true){
 	?>
 <div class="row">
 	<div class="span10 offset1" id="customSpaceTop">
@@ -583,7 +581,7 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 			<div class="control-group">
 				<label class="control-label" for="sourcePrice">Source Price:</label>
 				<div class="controls input-prepend">
-					<span class="add-on"><?php echo $options['currency_symbol']?></span>
+					<span class="add-on"><?php echo $_SESSION['options']['currency_symbol']?></span>
 					<input type="text" id="sourcePrice"/>
 				</div>
 			</div>
@@ -1099,7 +1097,7 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 <div id="footer">
 	<div class="container">	
 		<?php
-		if($options['includeCustom'] == true){
+		if($_SESSION['options']['includeCustom'] == true){
 			?>
 		<div class="row">
 			<div class="span10 offset1" id="customSpaceTop">
