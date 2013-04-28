@@ -25,8 +25,8 @@ class user extends db{
 			
 			$_SESSION['loggedIn'] = true;
 			$_SESSION['userid'] = $userInfo['userid'];
-			$_SESSION["fullname"] = $userInfo["fullname"];
-			$_SESSION["admin"] = $userInfo["admin"];
+			$_SESSION['fullname'] = $userInfo['fullname'];
+			$_SESSION['admin'] = $userInfo['admin'];
 			
 			return true;
 		}else{
@@ -398,7 +398,7 @@ class user extends db{
 */
 		function getMessages($args){
 			$readStatusQuery = ($args['readStatus'] == 2)? "":" and isread = ".$args['readStatus'];
-			$query = "select m.*, u.fullname from {$options['table-prefix']}messages m left join {$options['table-prefix']}users u on u.userid = m.sender where m.recipient = {$args['userid']} ".$readStatusQuery;
+			$query = "select m.*, u.fullname from {$this->options['table_prefix']}messages m left join {$this->options['table_prefix']}users u on u.userid = m.sender where m.recipient = {$args['userid']} ".$readStatusQuery;
 			
 
 			$result = $this->dbQuery($query);
