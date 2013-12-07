@@ -9,6 +9,7 @@ if(!file_exists('config.php')){
 
 
 include 'initialize.php';
+
 ?>
 <!DOCTYPE html>
 
@@ -138,7 +139,8 @@ include 'initialize.php';
 				
 		storedData.userWishlist.currentSort = sortByRankingDesc;
 		storedData.otherUserWishlist.currentSort = sortByRankingDesc;
-				
+
+		storedData.activeItem = {};
 		
 		$(document).ready(function(){
 				
@@ -153,8 +155,8 @@ include 'initialize.php';
 			
 			$("#addItems").click(function(){
 				clearManageItemForm();
-				$('#addSourceButton').addClass('disabled').prop("disabled","disabled");
-				$('#openAddImageForm').addClass('disabled').prop("disabled","disabled");
+//				$('#addSourceButton').addClass('disabled').prop("disabled","disabled");
+//				$('#openAddImageForm').addClass('disabled').prop("disabled","disabled");
 				$('#manageItemFormBlock').modal();
 				//swapModal("#manageItemFormBlock");
 			});
@@ -212,6 +214,20 @@ include 'initialize.php';
 			//Most of this should be rewritten into a method on script.js
 			$("#uploadframe").load(function(){
 				uploadResult = $.parseJSON($("#uploadframe").contents().text());
+
+				$("#uploadAlert").removeClass("alert-error").addClass("alert-success");
+				$("#uploadAlertMessage").append("The file upload is complete");
+
+				if(storedData.activeItem.images == undefined){
+					storedData.activeItem.images = {};
+				}
+
+				var imgTempId = randomString();
+				storedData.activeItem.images[imgTempId] = {"filename":uploadResult.fileName,"action":"add"}
+				
+				populateImagesOnForm();
+				
+				/*
 				if(uploadResult.queryResult == true){
 					$("#uploadAlert").removeClass("alert-error").addClass("alert-success");
 					$("#uploadAlertMessage").append("The file upload is complete");
@@ -220,6 +236,7 @@ include 'initialize.php';
 					$("#uploadAlert").removeClass("alert-success").addClass("alert-error");
 					$("#uploadAlertMessage").append("The file upload encountered some problems. Please try again.")				
 				}
+				*/
 				$("#uploadAlert").show();
 			});
 			
@@ -309,11 +326,18 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 			
 
 			jQuery("#itemSubmit").click(function(){
-				manageItem();
+				//manageItem();
+				setActiveItem();
 			});
 			
+			jQuery("#itemCancel").click(function(){
+				storedData.activeItem = {};
+			})
+
+			
 			jQuery("#itemSourceSubmit").click(function(){
-				manageItemSource();
+				//manageItemSource();
+				setActiveItemSource();
 			});
 			
 			$("#openManageUserForm").click(function(){
@@ -353,7 +377,8 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 				clearItemSourceForm();
 
 				//Set the itemID to get info for.
-				$("#itemSourceForm #sourceItemId").val($("form#manageItemForm input#itemId").val());
+				//$("#itemSourceForm #sourceItemId").val($("form#manageItemForm input#itemId").val());
+				$("#itemSourceSubmit").html("Add Source");
 				
 				$("#manageItemFormBlock").modal("hide");
 				$("#itemSourceFormBlock").modal("show").on('hide',function(){
@@ -505,7 +530,7 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 	</div>
 
 	<div class="modal-footer">
-		<a href="#" class="btn" data-dismiss="modal">Cancel</a>
+		<a href="#" id="itemCancel" class="btn" data-dismiss="modal">Cancel</a>
 		<a href="#" id="itemSubmit" class="btn btn-primary">Save changes</a>
 	</div>
 
@@ -609,9 +634,7 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 	  <div class="modal-body">
 			<form method="POST" id="imageUploadForm" enctype="multipart/form-data" onsubmit="return uploadImage();" action="ajaxCalls.php" target="uploadframe" >				
 				<input type="hidden" name="interact" value="wishlist">
-				<input type="hidden" name="action" value="manageItemImage">
-				<input type="hidden" name="itemImageAction" value="add">
-				<input type="hidden" name="itemid" id="itemIdForImage" value="1"/><br/>
+				<input type="hidden" name="action" value="uploadFile">
 			
 				<div class="control-group">
 					<label class="control-label" for="uploadfile">Select A file for upload</label>
@@ -634,7 +657,7 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 			<iframe id="uploadframe" name="uploadframe"></iframe>
 	  </div>
 	  <div class="modal-footer">
-		<a href="#" id="manageImageCloseButton" class="btn" data-dismiss="modal">Close</a>
+		<a href="#" id="manageImageCloseButton" class="btn" data-dismiss="modal">Back</a>
 	  </div>
 </div>
 
