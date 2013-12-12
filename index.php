@@ -10,6 +10,20 @@ if(!file_exists('config.php')){
 
 include 'initialize.php';
 
+
+if(!defined('VERSION')){
+	//DO NOT CHANGE THIS!! IT COULD BREAK YOUR INSTALLATION!
+	define("VERSION","0.9.96");
+	define("USER_AGENT_STRING","Mozilla/5.0 (compatible; DoWant/1.0; +code.google.com/p/do-want/)");	
+}else{
+	if($_SESSION['admin'] == 1){
+		?>
+		Hi Admin!
+		Please remove the "VERSION" and "USER_AGENT_STRING" Constants from your config.php file. 
+		They are no longer required there.
+		<?php
+	}
+}
 ?>
 <!DOCTYPE html>
 
@@ -464,7 +478,17 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 				checkForUpdates();
 			});
 			
-			$("button#checkForUpdate").trigger("click");
+			$("button#addCategoryButton").click(function(){
+				clearCategoryForm();
+				$('div#manageCategoryFormBlock').modal('show');
+			});
+			
+			$("#deleteCategorySubmit").click(function(){
+				deleteCategory($("#confirmObjectForm #confirmObjectId").val());
+			});
+						
+			
+//			$("button#checkForUpdate").trigger("click");
 <?php
 }
 ?>
@@ -500,7 +524,9 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 			<div class="control-group">
 				<label class="control-label" for="itemCategoryInput">Item Category:</label>
 				<div class="controls">
-					<select id="itemCategoryInput"></select>
+					<select id="itemCategoryInput">
+					<option value="null" >None</option>
+					</select>
 				</div>
 			</div>
 			<div class="control-group">
@@ -679,6 +705,7 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 			<a href="#" id="deleteSubmit" class="confirmButton btn btn-danger">Yes, Delete Item</a>
 			<a href="#" id="receivedSubmit" class="confirmButton btn btn-success">Yes, Mark Received</a>
 			<a href="#" id="deleteUserSubmit" class="confirmButton btn btn-danger">Yes, Delete This User</a>
+			<a href="#" id="deleteCategorySubmit" class="confirmButton btn btn-danger">Yes, Delete This Category</a>
 		</form>		
 	</div>
 </div>
@@ -776,7 +803,9 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 					</a></li>
 			    </ul>
 			    <ul class="nav pull-right">			
-				<?php if($_SESSION['admin'] == true){ ?>
+				<?php
+				 if($_SESSION['admin'] == true){
+					?>
 					<li><a href="#" id="adminTab" class="navLink" data-section="admin">
 						Admin
 					</a></li>
@@ -906,6 +935,7 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 		<?php if($_SESSION['admin'] == true){ ?>
 		<div id="admin" class="section">
 			<h2>Administration</h2>
+			<!--
 			<div class="row">
 				<div class="span10">
 					<div class="well">
@@ -916,6 +946,7 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 					</div>
 				</div>
 			</div>
+			-->
 			<div class="row">
 				<div class="span10">
 					<h3>Users</h3>
@@ -930,6 +961,7 @@ if(isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] == true)
 			<div class="row">
 				<div class="span5">
 					<h3>Categories</h3>
+					<button id="addCategoryButton" class="btn btn-primary">Add Category</button>
 					<div class="tableScrollContainer">
 						<table id="categoriesTable" class="table table-striped table-bordered table-condensed">
 						
